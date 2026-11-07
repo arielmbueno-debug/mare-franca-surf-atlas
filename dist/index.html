@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f5ef"><meta name="description" content="Explore os picos de surf da França em um mapa interativo. Melhores épocas, ondas, constância e a vida fora d'água.">
+<title>Maré — Atlas de surf da França</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/leaflet.css"><link rel="stylesheet" href="vendor/markercluster.css"><link rel="stylesheet" href="vendor/maplibre-gl.css"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+ <a class="brand" href="./" aria-label="Maré, início"><svg viewBox="0 0 42 32" aria-hidden="true"><path d="M2 24c7 0 8-18 21-18 8 0 12 6 12 12-5-5-12-3-12 2 0 5 7 7 16 5M2 30h37"/></svg><span>maré<span class="brand-dot">.</span></span></a>
+ <div class="edition">ATLAS DE SURF <span>/</span> FRANÇA</div>
+ <nav><button class="nav-active" id="exploreNav">Explorar <span>↗</span></button><button id="aboutBtn">Sobre o guia</button><button id="favoritesBtn" class="favorites-nav" aria-pressed="false">♡ <span class="favorite-label">Salvos</span> <b id="favCount">0</b></button></nav>
+</header>
+<main class="app">
+ <aside class="sidebar" aria-label="Buscar e filtrar picos">
+  <div class="intro"><div class="eyebrow"><span></span> DA MANCHA AO MEDITERRÂNEO</div><h1>Encontre sua<br>próxima <em>onda.</em></h1><p>Um litoral inteiro de possibilidades.<br>Escolha o pico. Sinta o lugar.</p><div class="atlas-stats"><div><strong id="totalSpots">—</strong><span>picos mapeados</span></div><i></i><div><strong id="totalRegions">—</strong><span>regiões costeiras</span></div><span class="mini-compass">✳</span></div></div>
+  <div class="filters">
+   <label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Pico, cidade ou região…" aria-label="Buscar pico, cidade ou região"><kbd>/</kbd></label>
+   <div class="filter-row"><label><span>REGIÃO</span><select id="region"><option value="">Toda a França</option></select></label><label><span>SEU NÍVEL</span><select id="level"><option value="">Todos os níveis</option><option>Iniciante</option><option>Intermediário</option><option>Avançado</option></select></label></div>
+   <div class="season-label"><label for="month">QUANDO VOCÊ VAI?</label><button id="reset" title="Limpar todos os filtros">Limpar filtros ↺</button></div>
+   <select id="month" aria-label="Mês da viagem"><option value="0">O ano inteiro · sem filtro de época</option></select>
+   <div class="quick-filters"><button id="qualityChip" aria-pressed="false">✦ Ondas de destaque</button><button id="consistentChip" aria-pressed="false">≋ Mais constantes</button></div>
+  </div>
+  <div class="results-head"><span><b id="resultCount">—</b> picos para explorar</span><select id="sort" aria-label="Ordenar picos"><option value="quality">Destaques ↓</option><option value="name">Nome A–Z</option><option value="consistency">Constância ↓</option><option value="north">Norte → sul</option><option value="distance">Perto de Paris ↑</option></select></div>
+  <div class="spot-list" id="spotList" aria-live="polite"></div>
+  <div class="sidebar-foot"><span class="tiny-wave">≋</span> Guia sazonal · sem dados ao vivo <button id="methodBtn">Notas do atlas ↗</button></div>
+ </aside>
+ <section class="map-area" aria-label="Mapa interativo dos pontos de surf">
+  <div id="map"></div>
+  <div class="map-top"><div class="map-context"><span class="live-dot"></span> FRANÇA <span class="context-separator">/</span> <span id="mapSubtitle">O litoral, de ponta a ponta</span></div><button id="fitBtn" class="map-button">⌖ <span>Ajustar mapa</span></button></div>
+  <button id="basemapBtn" class="map-button basemap-switch" aria-label="Alternar o fundo do mapa">▧ Mapa essencial</button>
+  <button id="measureBtn" class="map-button measure-switch" aria-pressed="false">↔ Medir distância</button>
+  <section id="measurePanel" class="measure-panel" aria-label="Régua de distância" hidden><div class="measure-heading"><b>RÉGUA DO ATLAS</b><button id="measureDone" aria-label="Fechar régua">×</button></div><output id="measureDistance" aria-live="polite">0 m</output><p id="measureHelp">Clique em dois ou mais lugares do mapa.</p><div class="measure-actions"><button id="measureParis">Partir de Paris</button><button id="measureUndo">Desfazer</button><button id="measureClear">Limpar</button></div><small>Distância em linha reta, sem seguir estradas.</small></section>
+  <div class="map-instruction" id="mapInstruction"><span>↖</span> Passe o mouse para descobrir. Clique para mergulhar.</div>
+  <div class="map-legend"><span class="legend-title">QUALIDADE DO PICO</span><span><i style="--dot:#d35d38"></i>Excepcional</span><span><i style="--dot:#236e6a"></i>Muito boa</span><span><i style="--dot:#71898d"></i>Boa / ocasional</span><button id="legendInfo" aria-label="Entender as notas">ⓘ</button></div>
+  <div class="map-status" id="mapStatus" hidden>O fundo do mapa não carregou. Os picos e as fichas continuam disponíveis. Verifique a conexão.</div>
+  <section class="detail-panel" id="detailPanel" aria-label="Detalhes do pico" hidden></section>
+  <button id="mobileList" class="mobile-list-button">☷ Ver picos <span id="mobileCount"></span></button>
+ </section>
+</main>
+<dialog id="aboutDialog"><button class="dialog-close" id="closeDialog" aria-label="Fechar">×</button><div class="eyebrow">CADERNO DE VIAGEM · NOVEMBRO 2026</div><h2>Um atlas para<br>seguir a maré.</h2><p>Da Normandia à Córsega, este guia reúne praias, recifes e pontas conhecidos da França metropolitana. É uma seleção ampla, não um inventário exaustivo de todos os picos — nem um catálogo de ondas secretas.</p><h3>Como ler as fichas</h3><p><b>Qualidade (1–5)</b> é uma avaliação editorial do potencial da onda quando o pico está funcionando. <b>Constância (1–5)</b> resume a exposição habitual às ondulações. Não são médias estatísticas, garantias de ondas ou boletins de hoje.</p><p>Os meses destacados indicam uma janela sazonal recomendada para o perfil indicado: potencial de ondas para os mais experientes e condições geralmente menores para quem está começando. Verão pode ser melhor para aprender; inverno pode trazer mar pesado e vento. “Iniciante” sempre pressupõe mar pequeno, supervisão e orientação local.</p><p>Vento, swell e maré são referências gerais; os bancos de areia mudam. Coordenadas são aproximadas, para localizar o setor da praia, e não uma entrada segura na água. Respeite as áreas de banho, as dunas, os locais e as interdições vigentes.</p><h3>Planeje com informação atual</h3><p>Este atlas não consulta condições em tempo real. Antes da sessão, confira previsão, marés, qualidade da água e avisos locais. Cada ficha tem a fonte de referência e atalhos para pesquisar a previsão e localizar a praia.</p><h3>Fontes consultadas</h3><p>Órgãos de turismo, Federação Francesa de Surf e guias especializados. As descrições, notas e sínteses sazonais são editoriais. Curadoria consultada em 7 de novembro de 2026.</p><div id="sources"></div><footer>Feito para explorar. E voltar com sal na pele. ≋</footer></dialog>
+<script src="vendor/leaflet.js"></script><script src="vendor/markercluster.js"></script><script src="vendor/maplibre-gl.js"></script><script src="vendor/leaflet-maplibre-gl.js"></script><script src="basemap-data.js"></script><script src="basemap-style.js"></script><script src="basemap.js"></script><script src="spots.js"></script><script src="public-transport.js"></script><script src="journey.js"></script><script src="app.js"></script>
+</body></html>
